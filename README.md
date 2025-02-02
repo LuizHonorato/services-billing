@@ -32,6 +32,7 @@ Este serviço foi criado com a utilização das seguintes ferramentas:
 - NestJS 11
 - Typescript
 - Jest
+- Throttler (Rate limiting)
 - Redis
 - Docker
 - docker-compose
