@@ -1,26 +1,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import CacheClientOutputPort from '@/core/ports/out/cache-client.output-port';
-import MailNotificationOutputPort from '@/core/ports/out/mail-notification.output-port';
-// import ProcessChargeException from '@/core/shared/exceptions/process-charge.exception';
 import ProcessChargesUseCase from '@/core/application/use-cases/process-charges.use-case';
 import ProcessChargesDto from '@/core/application/dtos/process-charges.dto';
+import MockMailNotification from '@/core/tests/mocks/mail-notification.mock';
+import MockCacheClient from '@/core/tests/mocks/cache-client.mock';
 
 describe('ProcessChargesUseCase', () => {
   let useCase: ProcessChargesUseCase;
-  let mockCacheClient: jest.Mocked<CacheClientOutputPort>;
-  let mockMailNotification: jest.Mocked<MailNotificationOutputPort>;
+  let mockCacheClient: MockCacheClient;
+  let mockMailNotification: MockMailNotification;
 
   beforeEach(() => {
-    mockCacheClient = {
-      get: jest.fn(),
-      set: jest.fn(),
-      delete: jest.fn(),
-    };
-    mockMailNotification = {
-      sendMail: jest.fn(),
-    };
-
+    mockMailNotification = new MockMailNotification();
+    mockCacheClient = new MockCacheClient();
     useCase = new ProcessChargesUseCase(mockCacheClient, mockMailNotification);
   });
 
@@ -53,7 +45,9 @@ describe('ProcessChargesUseCase', () => {
     };
 
     jest.spyOn(mockCacheClient, 'get').mockResolvedValueOnce('0');
-    jest.spyOn(mockMailNotification, 'sendMail').mockResolvedValueOnce();
+    jest
+      .spyOn(mockMailNotification, 'sendMail')
+      .mockResolvedValueOnce(undefined);
 
     jest.spyOn(fs, 'unlinkSync').mockImplementation();
 
